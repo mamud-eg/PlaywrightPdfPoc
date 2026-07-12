@@ -1,0 +1,1860 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ajour System Report</title>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Work Sans', arial, sans-serif;
+            font-size: 12px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #bbb;
+            padding: 5px 10px;
+        }
+
+        .photoTable td {
+            page-break-inside: avoid;
+        }
+
+        td.serial {
+            margin: 0;
+        }
+
+        div.status table tbody tr td,
+        div.status table tbody tr th {
+            vertical-align: top !important;
+        }
+
+        div.status table tbody tr th {
+            text-align: left;
+            width: 50%;
+        }
+
+        .status-label {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: normal;
+            padding: 2px 6px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-date {
+            display: inline-block;
+            float: right;
+            font-size: 10px;
+            font-weight: normal;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-divider {
+            border-bottom: 1px dotted #bbb;
+            padding-bottom: 3px;
+            margin-bottom: 3px;
+        }
+
+        .labels-container {
+            display: block;
+            overflow-wrap: break-word;
+            border: 1px solid #bbb;
+            padding: 10px 10px 0px 10px;
+        }
+
+        .label-item {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 5px;
+            vertical-align: middle;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+        }
+
+        .label-color-circle {
+            position: relative;
+            top: 1.5px; /* Inline-flex did not work for centering. This is a workaround */
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 2px;
+        }
+
+        div.description table tbody tr td {
+            border: 1px solid #bbb;
+            width: 100%;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+
+        div.checklist table tbody tr td {
+            vertical-align: top;
+        }
+
+        div.comments {
+            page-break-inside: avoid;
+        }
+
+        div.comments table tbody tr td {
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        div.comments table tbody tr td i {
+            font-size: 10px;
+            text-transform: lowercase;
+        }
+
+        div.comments table tbody tr td .img-container {
+            text-align: right;
+        }
+
+        div.comments table tbody tr td .attached-files {
+            text-transform: lowercase;
+        }
+
+        .drawing-container {
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .drawing-header {
+            border-top: 1px solid #bbbbbb;
+            border-left: 1px solid #bbbbbb;
+            border-right: 1px solid #bbbbbb;
+            box-sizing: border-box;
+            padding: 2.5px 10px;
+            height: 25px;
+            width: 920px;
+        }
+
+        div.drawing div.img {
+            border: 1px solid #bbbbbb;
+            padding: 5px;
+            width: 920px;
+            /*height: 1060px; This is now set inline at it can change depending on where or not there are GPScoordinates*/ 
+            box-sizing: border-box;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        div.photos {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1em;
+        }
+
+        div.photos table tbody tr td {
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        div.photo-container {
+            border: 1px solid #bbb;
+            display: inline-block;
+            float: left;
+            overflow: hidden;
+        }
+
+        div.photo-container.photo-1 {
+            width: 99.7%;
+            height: 1050px;
+            margin: 0 !important;
+        }
+
+        div.photo-container.photo-2 {
+            width: 99.7%;
+            height: 545px;
+        }
+
+        div.photo-container.photo-2:not(:first-child) {
+            margin-top: 0.5% !important;
+        }
+
+        div.photo-container.photo-4 {
+            width: 49.2%;
+            height: 540px;
+            margin: 0.5% 5px 0.5% 0px !important;
+        }
+
+        div.photo-container.photo-8 {
+            width: 49.2%;
+            height: 265px;
+            margin: 0.5% 0 !important;
+        }
+
+        div.photo-date {
+            border-bottom: 1px solid #bbb;
+            box-sizing: border-box;
+            padding: 2.5px 10px;
+            height: 25px;
+        }
+
+        div.photo-container .photo {
+            display: block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: inherit;
+            max-width: 100%;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        svg {
+            float: right;
+        }
+
+        h3 {
+            border: 1px solid #bbb;
+            background: #f0f0f0;
+            padding: 4px;
+            padding-left: 10px;
+            margin-bottom: 2px;
+            margin-top: 0;
+        }
+
+        .bg-Created {
+            background: #eec721;
+        }
+
+        .bg-Unhandled {
+            background: #bbbbbb;
+        }
+
+        .bg-Rejected {
+            background: #d400b9;
+        }
+
+        .bg-Completed {
+            background: #49b6d6;
+        }
+
+        .bg-None {
+            background: #eec721;
+        }
+
+        .bg-NotApproved {
+            background: #ff5b57;
+        }
+
+        .bg-Done {
+            background: #5cb85c;
+        }
+
+        .txt-Created {
+            color: #eec721;
+        }
+
+        .txt-Unhandled {
+            color: #bbbbbb;
+        }
+
+        .txt-Rejected {
+            color: #d400b9;
+        }
+
+        .txt-Completed {
+            color: #49b6d6;
+        }
+
+        .txt-None {
+            color: #eec721;
+        }
+
+        .txt-NotApproved {
+            color: #ff5b57;
+        }
+
+        .txt-Done {
+            color: #5cb85c;
+        }
+        
+        .photoTable thead {
+            background: #f0f0f0;
+            text-align: left;
+            font-size: 1.17em;
+        }
+        .page-break-after{
+            page-break-after: always;
+        }
+        
+        .noTableBoarder {
+            padding: 0;
+            border: none;
+        }
+        
+        .noTableBoarder p {
+            min-height: 14px;
+        }
+        
+        .invisibleTableLayout th{
+            padding: 0;
+            border: none;
+        }
+        
+        /*In Use!*/
+        .headerTable {
+            padding: 0;
+            border: none;
+        }
+        
+        .hideTextOverFlow{
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .headerTable > table{
+            margin-bottom: 10px;
+        }
+        
+        .marginBottom10 {
+            margin-bottom: 10px;
+        }
+        
+        /*Essential for page-breaking!!!*/
+        tr {
+            page-break-inside: avoid;
+        }
+        /*In Use!*/
+        .lastCheckListElement{
+            margin-bottom: 10px;
+        }    
+                
+</style>
+</head>
+<body>
+
+ 
+
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+<table class='markerTable'>
+<thead>
+<tr class="invisibleTableLayout">
+    <th width="13%"></th>
+    <th width="25%"></th>
+    <th width="10%"></th>
+    <th width="23%"></th>
+    <th></th>
+</tr>
+<tr>
+    <th colspan="5" class="headerTable">
+        <table>
+            <thead>
+            <tr>
+                <th valign="top" class="bg-Created serial" width="1px"> 
+                    <strong>#7</strong>
+                </th>
+                <th nowrap="nowrap" class="left" width="1px" style="white-space: nowrap;"> 
+                    <strong>Type:</strong> Projekt
+                </th>
+                <th class="right">
+                        <strong>Tidsfrist fra:</strong>
+02-11-23                        <strong>til:</strong>
+02-11-23                </th>
+            </tr>
+            <tr>
+                <th nowrap="nowrap" class="left" colspan="3">
+                    <div class="projectLevel">
+                        <b>Projektmapper:</b>
+                        <text style="font-weight:normal;">
+                            111
+                        </text>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </th>
+</tr>
+</thead>
+<tbody>        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="status marginBottom10">
+                    <h3>Registreringsstatus</h3>
+                    <table>
+                        <tbody>
+                        <tr>
+                                <th colspan="2">Modtager</th>
+                            <th colspan="2">Ansvarlig</th>
+                        </tr>
+                        <tr>
+                            <!--| Receiver |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-Unhandled">Modtaget</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                                <td>
+                                </td>
+                            <!--| Responsible |-->
+                            <td width="25%">
+                                <div class="status-divider">
+                                    <span class="status-label bg-None">Oprettet</span>
+                                </div>
+                                <strong>ajour</strong>
+                                <br/>
+                                jens andersen
+                                <br/>
+                                02-11-23, 15:08:27
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <!--| FORWARD (NB: Razor cannot parse ?. operator, aka Null-conditional aka Safe-Navigation) |-->
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    <!-- Labels Section -->
+    <tr>
+        <td class="noTableBoarder" colspan="5">
+            <div class="category marginBottom10">
+                <h3>Kategori/Liste</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>fisk &gt; lars &gt; bbbb &gt; ccc &gt; xxx</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+        <tr>
+            <td class="noTableBoarder" colspan="5">
+                <div class="comments">
+                    <h3>Kommentarer</h3>
+                </div>
+            </td>
+        </tr>
+            <tr>
+                <td class="hideTextOverFlow" colspan="3">jens andersen</td>
+                <td class="hideTextOverFlow">ajour</td>
+                <td class="hideTextOverFlow right">02-11-23, 15:31:18</td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div style="float: right;">
+                                <div class="img-container">
+                                    <img src="assets/placeholder-registration-photo.jpg" style="max-width: 300px; max-height: 300px;" alt=""/><br/>
+                                </div>
+                     </div>
+
+                    rfhghd
+                    <br/><br/>
+                </td>
+            </tr>
+            <tr><td colspan="5" style="padding: 0; padding-top: 2px;"></td></tr>
+</tbody></table>    <div class="page-break-after"></div>
+</tbody></table>    <div class="page-break-after"></div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ajour System Report</title>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Work Sans', arial, sans-serif;
+            font-size: 12px;
+        }
+
+        table.foot {
+            border-top: 1px solid #bbb;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        table.foot tbody tr td {
+            padding: 5px 10px 0;
+            vertical-align: middle;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+    <script type="text/javascript">
+        function substitutePdfVariables() {
+
+            function getParameterByName(name) {
+                var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+                return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+            }
+
+            function substitute(name) {
+                var value = getParameterByName(name);
+                var elements = document.getElementsByClassName(name);
+
+                for (var i = 0; elements && i < elements.length; i++) {
+                    elements[i].textContent = value;
+                }
+            }
+
+            ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection'].forEach(function (param) {
+                substitute(param);
+            });
+        }
+    </script>
+</head>
+<body onload="substitutePdfVariables()">
+<table class="foot">
+    <tbody>
+    <tr>
+        <td class="left">
+            <img width="95" src="assets/EG-Ajour.png" alt="">
+        </td>
+        <td class="center" width="100%">
+            <strong>Udskrevet af:</strong><br /> 
+            Test User • 02-11-2023, 15.49.32
+        </td>
+        <td class="right" nowrap="nowrap">Side <span class="page"></span> af <span class="topage"></span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
