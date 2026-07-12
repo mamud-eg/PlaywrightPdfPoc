@@ -8,12 +8,16 @@ namespace PlaywrightPdfPoc;
 // <style>/<link> tags that would otherwise be silently dropped.
 public static class HtmlMerger
 {
-    // Strategy: CSS "running elements" via position:fixed. Known Chromium print-to-PDF risk
-    // (verified empirically, see RESULTS.md): fixed-position elements typically only render on
-    // the first printed page, not every page.
+    // Strategy: CSS "running elements" via position:fixed.
+    // Verified empirically (see RESULTS.md): fixed-position elements DO repeat on every printed
+    // page in Chromium's headless print-to-PDF — contrary to the commonly-cited limitation.
+    // But position:fixed removes the header/footer from the flow, so body content needs its own
+    // padding reserved (matching PdfGeneratorService's native-strategy margins) or it renders
+    // underneath the fixed header, producing overlapping/garbled text on page 1.
     private const string RunningElementsStyle = """
         .pw-poc-header { position: fixed; top: 0; left: 0; right: 0; }
         .pw-poc-footer { position: fixed; bottom: 0; left: 0; right: 0; }
+        .pw-poc-body-content { padding-top: 20mm; padding-bottom: 15mm; }
         """;
 
     public static string MergeRunning(SampleInput s)
@@ -32,7 +36,7 @@ public static class HtmlMerger
               </style>
             </head><body>
               <div class="pw-poc-header">{headerInner}</div>
-              {bodyInner}
+              <div class="pw-poc-body-content">{bodyInner}</div>
               <div class="pw-poc-footer">{footerInner}</div>
             </body></html>
             """;
@@ -74,6 +78,24 @@ public static class HtmlMerger
             """;
 
         return WriteNextTo(s.BodyHtmlPath, merged);
+    }
+
+    // Playwright's native HeaderTemplate/FooterTemplate expects a small HTML fragment, not a
+    // full standalone document — passing a whole <html><head>...<body>...</body></html> file
+    // straight through makes Chromium's internal template renderer fail outright
+    // (Page.printToPDF: "Printing failed"). Reuse the same head/body extraction as the merge
+    // strategies to build a valid fragment instead.
+    //
+    // Verified empirically: an external <link rel="stylesheet"> (e.g. a Google Fonts import,
+    // present in every real header/footer template surveyed) doesn't just fail to apply here —
+    // it makes Page.printToPDF fail outright for the whole conversion. Inline <style> blocks
+    // are fine; only external <link> stylesheets need stripping.
+    public static string BuildNativeTemplate(string htmlPath)
+    {
+        var (head, bodyInner) = ReadSplit(htmlPath);
+        var headWithoutExternalStylesheets = Regex.Replace(head, @"<link[^>]*rel=[""']stylesheet[""'][^>]*>", "",
+            RegexOptions.IgnoreCase);
+        return $"{headWithoutExternalStylesheets}\n{bodyInner}";
     }
 
     private static (string head, string bodyInner) ReadSplit(string htmlPath)

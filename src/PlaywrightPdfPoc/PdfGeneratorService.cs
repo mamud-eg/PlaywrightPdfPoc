@@ -68,8 +68,8 @@ public class PdfGeneratorService : IAsyncDisposable
         {
             opts.Margin = new() { Top = NativeHeaderHeight, Bottom = DefaultFooterMargin, Left = "0", Right = "0" };
             opts.DisplayHeaderFooter = true;
-            opts.HeaderTemplate = await File.ReadAllTextAsync(s.HeaderHtmlPath, ct);
-            opts.FooterTemplate = await File.ReadAllTextAsync(s.FooterHtmlPath, ct);
+            opts.HeaderTemplate = AdaptWkHtmlPageNumberClasses(HtmlMerger.BuildNativeTemplate(s.HeaderHtmlPath));
+            opts.FooterTemplate = AdaptWkHtmlPageNumberClasses(HtmlMerger.BuildNativeTemplate(s.FooterHtmlPath));
             bodyToLoad = s.BodyHtmlPath;
         }
         else
@@ -111,6 +111,16 @@ public class PdfGeneratorService : IAsyncDisposable
             Strategy = strategyName
         };
     }
+
+    // The original service's header/footer templates get page numbers via wkhtmltopdf's own
+    // per-page querystring reload + a substitutePdfVariables() script that fills in
+    // class="page"/class="topage" spans. Chromium's native HeaderTemplate/FooterTemplate has
+    // no such reload (and JS is disabled anyway) — it instead recognizes its own fixed set of
+    // placeholder classes (pageNumber/totalPages/date/title/url). Remapping the known classes
+    // is what makes native strategy's page numbers actually render instead of staying blank.
+    private static string AdaptWkHtmlPageNumberClasses(string html) =>
+        html.Replace("class=\"page\"", "class=\"pageNumber\"")
+            .Replace("class=\"topage\"", "class=\"totalPages\"");
 
     private static void TryDelete(string path)
     {
